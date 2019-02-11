@@ -153,6 +153,7 @@ class BasicExecute:
     def __init__(self, tree, env):
         self.env = env
         result = self.walkTree(tree)
+        print(env)
         if result is not None and isinstance(result, int):
             print(result)
         if isinstance(result, str) and result[0] == '"':
@@ -245,6 +246,17 @@ class BasicExecute:
         #It lacks var ref printing!
         if node[0] == 'print_stmt_string':
             print(node[1][1:-1])
+
+        if node[0] == 'print_stmt_var':
+            try:
+                print (self.env[node[1]])
+            except LookupError:
+                print("Undefined variable '"+node[1]+"' found!")
+                return 0
+
+        if node[0] == 'print_stmt_expr':
+            res = self.walkTree(node[1])
+            print(res)
 
 
 
