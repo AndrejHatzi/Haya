@@ -2,7 +2,7 @@ from sly import Lexer
 from sly import Parser
 
 class BasicLexer(Lexer):
-    tokens = { NAME, NUMBER, FLOAT, STRING, IF, THEN, ELSE, FOR, WHILE, LEQ, PRINT, FUN, TO, ARROW, EQEQ, RPAREN, LPAREN}
+    tokens = { NAME, NUMBER, FLOAT, STRING, IF, THEN, ELSE, FOR, FASTERLOOP, WHILE, LEQ, PRINT, FUN, TO, ARROW, EQEQ, RPAREN, LPAREN}
     ignore = '\t '
     # ADDED '.' TRY FOR FLOATS
     literals = { '=', '+', '-', '/', '*', '(', ')', ',', ';' , '.'}
@@ -12,6 +12,7 @@ class BasicLexer(Lexer):
     THEN = r':'
     ELSE = r'else'
     FOR = r'for'
+    FASTERLOOP = r'ffor'
     WHILE = r'while'
     FUN = r'FUN'
     TO = r','
@@ -57,6 +58,7 @@ class BasicParser(Parser):
 
     def __init__(self):
         self.env = { }
+
     @_('')
     def statement(self, p):
         pass
@@ -77,6 +79,10 @@ class BasicParser(Parser):
     @_('FOR RPAREN var_assign TO expr LPAREN THEN statement')
     def statement(self, p):
         return ('for_loop', ('for_loop_setup', p.var_assign, p.expr), p.statement)
+
+    @_('FASTERLOOP RPAREN var_assign TO expr LPAREN THEN statement')
+    def statement(self, p):
+        return ('faster_for_loop', ('for_loop_setup', p.var_assign, p.expr), p.statement)
 
     @_('WHILE RPAREN condition LPAREN THEN statement')
     def statement(self, p):

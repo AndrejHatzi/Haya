@@ -1,9 +1,10 @@
 
 from sly import Lexer
 from sly import Parser
+from fasterloop import faster_for_loop
 
 class BasicLexer(Lexer):
-    tokens = { NAME, NUMBER, FLOAT, STRING, IF, THEN, ELSE, FOR, WHILE, PRINT, FUN, TO, ARROW, EQEQ, LEQ, RPAREN, LPAREN}
+    tokens = { NAME, NUMBER, FLOAT, STRING, IF, THEN, ELSE, FOR, FASTERLOOP, WHILE, PRINT, FUN, TO, ARROW, EQEQ, LEQ, DEL, RPAREN, LPAREN}
     ignore = '\t '
 
     literals = { '=', '+', '-', '/', '*', '(', ')', ',', ';' }
@@ -13,10 +14,12 @@ class BasicLexer(Lexer):
     THEN = r':'
     ELSE = r'else'
     FOR = r'for'
+    FASTERLOOP = 'ffor'
     WHILE = r'while'
     FUN = r'FUN'
     TO = r','
     ARROW = r'->'
+    DEL = r'del'
     PRINT = r'print'
     NAME = r'[a-zA-Z_][a-zA-Z0-9_]*'
     STRING = r'\".*?\"'
@@ -83,6 +86,10 @@ class BasicParser(Parser):
     def statement(self, p):
         return ('for_loop', ('for_loop_setup', p.var_assign, p.expr), p.statement)
 
+    @_('FASTERLOOP RPAREN var_assign TO expr LPAREN THEN statement')
+    def statement(self, p):
+        return ('faster_for_loop', ('for_loop_setup', p.var_assign, p.expr), p.statement)
+
     @_('WHILE RPAREN condition LPAREN THEN statement')
     def statement(self, p):
         return ('while_loop', ('while_loop_setup', p.condition), p.statement)
@@ -125,6 +132,10 @@ class BasicParser(Parser):
     @_('NAME "=" STRING')
     def var_assign(self, p):
         return ('var_assign', p.NAME, p.STRING)
+
+    @_('DEL NAME')
+    def statement(self, p):
+        return ('del_var', p.NAME)
 
     @_('expr')
     def statement(self, p):
@@ -236,6 +247,9 @@ class BasicExecute:
             self.env[node[1]] = self.walkTree(node[2])
             return node[1]
 
+        if node[0] == 'del_var':
+            del self.env[node[1]]
+
         if node[0] == 'var':
             try:
                 return self.env[node[1]]
@@ -247,18 +261,30 @@ class BasicExecute:
             if node[1][0] == 'for_loop_setup':
                 loop_setup = self.walkTree(node[1])
 
+                #searches for the var in the env and gets it's value
                 loop_count = self.env[loop_setup[0]]
                 loop_limit = loop_setup[1]
 
                 for i in range(loop_count+1, loop_limit+1):
                     res = self.walkTree(node[2])
-                    if res is not None:
-                        print(res)
+                    #if res is not None: --> Deprecated for Print fun_call
+                        #print(res)
                     self.env[loop_setup[0]] = i
                 del self.env[loop_setup[0]]
 
         if node[0] == 'for_loop_setup':
             return (self.walkTree(node[1]), self.walkTree(node[2]))
+
+        if node[0] == 'faster_for_loop':
+            if node[1][0] == 'for_loop_setup':
+                loop_setup = self.walkTree(node[1])
+                loop_count = self.env[loop_setup[0]]
+                loop_limit = loop_setup[1]
+                try:
+                    faster_for_loop(loop_count, loop_limit)
+                    del self.env[loop_setup[0]]
+                except:
+                    print('fast loops only accept integer values')
 
         if node[0] == 'while_loop':
             stmt = self.walkTree(node[1][1])
