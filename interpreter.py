@@ -3,7 +3,7 @@ from sly import Lexer
 from sly import Parser
 
 class BasicLexer(Lexer):
-    tokens = { NAME, NUMBER, FLOAT, STRING, IF, THEN, ELSE, FOR, PRINT, FUN, TO, ARROW, EQEQ, RPAREN, LPAREN}
+    tokens = { NAME, NUMBER, FLOAT, STRING, IF, THEN, ELSE, FOR, WHILE, PRINT, FUN, TO, ARROW, EQEQ, LEQ, RPAREN, LPAREN}
     ignore = '\t '
 
     literals = { '=', '+', '-', '/', '*', '(', ')', ',', ';' }
@@ -13,6 +13,7 @@ class BasicLexer(Lexer):
     THEN = r':'
     ELSE = r'else'
     FOR = r'for'
+    WHILE = r'while'
     FUN = r'FUN'
     TO = r','
     ARROW = r'->'
@@ -24,6 +25,7 @@ class BasicLexer(Lexer):
 
 
     EQEQ = r'=='
+    LEQ = r'<='
 
     @_(r'\d+')
     def NUMBER(self, t):
@@ -72,10 +74,18 @@ class BasicParser(Parser):
     def statement(self, p):
         return ('print_stmt_string', p.STRING)
 
+    @_('PRINT RPAREN condition LPAREN')
+    def statement(self, p):
+        return ('print_stmt_condition', p.condition)
+
     #for (x=5, 10): x
     @_('FOR RPAREN var_assign TO expr LPAREN THEN statement')
     def statement(self, p):
         return ('for_loop', ('for_loop_setup', p.var_assign, p.expr), p.statement)
+
+    @_('WHILE RPAREN condition LPAREN THEN statement')
+    def statement(self, p):
+        return ('while_loop', ('while_loop_setup', p.condition), p.statement)
 
     #if x==5: x
     @_('IF condition THEN statement')
@@ -99,6 +109,10 @@ class BasicParser(Parser):
     @_('expr EQEQ expr')
     def condition(self, p):
         return ('condition_eqeq', p.expr0, p.expr1)
+
+    @_('expr LEQ expr')
+    def condition(self, p):
+        return ('condition_leq', p.expr0, p.expr1)
 
     @_('var_assign')
     def statement(self, p):
@@ -196,6 +210,9 @@ class BasicExecute:
         if node[0] == 'condition_eqeq':
             return self.walkTree(node[1]) == self.walkTree(node[2])
 
+        if node[0] == 'condition_leq':
+            return self.walkTree(node[1]) <= self.walkTree(node[2])
+
         if node[0] == 'fun_def':
             self.env[node[1]] = node[2]
 
@@ -243,6 +260,22 @@ class BasicExecute:
         if node[0] == 'for_loop_setup':
             return (self.walkTree(node[1]), self.walkTree(node[2]))
 
+        if node[0] == 'while_loop':
+            stmt = self.walkTree(node[1][1])
+            print(stmt)
+            while stmt:
+                res = self.walkTree(node[2])
+                if res:
+                    return self.walkTree(node[2][1])
+
+
+
+
+
+            #if node[1][0] == 'while_loop_setup':
+                #loop_setup = self.walkTree(node[1])
+                #print(loop_setup)
+
         #It lacks var ref printing!
         if node[0] == 'print_stmt_string':
             print(node[1][1:-1])
@@ -257,6 +290,10 @@ class BasicExecute:
         if node[0] == 'print_stmt_expr':
             res = self.walkTree(node[1])
             print(res)
+
+        if node[0] == 'print_stmt_condition':
+            return self.walkTree(node[1])
+
 
 
 

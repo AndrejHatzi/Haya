@@ -2,7 +2,7 @@ from sly import Lexer
 from sly import Parser
 
 class BasicLexer(Lexer):
-    tokens = { NAME, NUMBER, FLOAT, STRING, IF, THEN, ELSE, FOR, PRINT, FUN, TO, ARROW, EQEQ, RPAREN, LPAREN}
+    tokens = { NAME, NUMBER, FLOAT, STRING, IF, THEN, ELSE, FOR, WHILE, LEQ, PRINT, FUN, TO, ARROW, EQEQ, RPAREN, LPAREN}
     ignore = '\t '
     # ADDED '.' TRY FOR FLOATS
     literals = { '=', '+', '-', '/', '*', '(', ')', ',', ';' , '.'}
@@ -12,6 +12,7 @@ class BasicLexer(Lexer):
     THEN = r':'
     ELSE = r'else'
     FOR = r'for'
+    WHILE = r'while'
     FUN = r'FUN'
     TO = r','
     ARROW = r'->'
@@ -23,6 +24,7 @@ class BasicLexer(Lexer):
 
 
     EQEQ = r'=='
+    LEQ = r'<='
 
     @_(r'\d+')
     def NUMBER(self, t):
@@ -76,6 +78,9 @@ class BasicParser(Parser):
     def statement(self, p):
         return ('for_loop', ('for_loop_setup', p.var_assign, p.expr), p.statement)
 
+    @_('WHILE RPAREN condition LPAREN THEN statement')
+    def statement(self, p):
+        return ('while_loop', ('while_loop_setup', p.condition), p.statement)
     #if x==5: x
     @_('IF condition THEN statement')
     def statement(self, p):
@@ -98,6 +103,10 @@ class BasicParser(Parser):
     @_('expr EQEQ expr')
     def condition(self, p):
         return ('condition_eqeq', p.expr0, p.expr1)
+
+    @_('expr LEQ expr')
+    def condition(self, p):
+        return ('condition_leq', p.expr0, p.expr1)
 
     @_('var_assign')
     def statement(self, p):
