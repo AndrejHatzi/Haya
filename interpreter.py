@@ -1,4 +1,3 @@
-
 from sly import Lexer
 from sly import Parser
 from fasterloop import faster_for_loop

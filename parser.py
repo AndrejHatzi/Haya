@@ -33,8 +33,8 @@ class BasicLexer(Lexer):
         return t
 
     #match floats
-    #Not working!!
-    @_(r'^[+-]?[0-9]*\.[0-9]+$"')
+    #Not working!! #=> implementar build 0
+    @_(r'[+-]((\d+(\.\d*)?)|\.\d+)([eE][+-]?[0-9]+)?')
     def FLOAT(self, t):
         t.value = float(t.value)
         return t
