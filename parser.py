@@ -2,7 +2,8 @@ from sly import Lexer
 from sly import Parser
 
 class BasicLexer(Lexer):
-    tokens = { NAME, NUMBER, FLOAT, STRING, IF, THEN, ELSE, FOR, FASTERLOOP, WHILE, LEQ, PRINT, FUN, TO, ARROW, EQEQ, RPAREN, LPAREN}
+    tokens = { NAME, NUMBER, FLOAT, STRING, IF, THEN, ELSE, FOR, FASTERLOOP, WHILE, CREATE, LEQ, PRINT, FUN,TO, ARROW, EQEQ, RPAREN, LPAREN}
+    #{ NAME, NUMBER, FLOAT, STRING, IF, THEN, ELSE, FOR, FASTERLOOP, WHILE,FUN,CREATE,TO, ARROW,PRINT,EQEQ, RPAREN, LPAREN}
     ignore = '\t '
     # ADDED '.' TRY FOR FLOATS
     literals = { '=', '+', '-', '/', '*', '(', ')', ',', ';' , '.'}
@@ -12,9 +13,10 @@ class BasicLexer(Lexer):
     THEN = r':'
     ELSE = r'else'
     FOR = r'for'
-    FASTERLOOP = r'ffor'
+    FASTERLOOP = r'fasterfor'
     WHILE = r'while'
     FUN = r'FUN'
+    CREATE = r'createfile'
     TO = r','
     ARROW = r'->'
     PRINT = r'print'
@@ -22,6 +24,18 @@ class BasicLexer(Lexer):
     STRING = r'\".*?\"'
     RPAREN = r'[(]'
     LPAREN = r'[)]'
+    '''
+    @_('expr PLUS term',
+   'expr MINUS term')
+def expr(self, p):
+    return (p[1], p.expr, p.term)
+    '''
+
+    '''
+    @_('LPAREN expr RPAREN')
+def expr(self, p):
+    return ('group-expression',p.expr])
+    '''
 
 
     EQEQ = r'=='
@@ -75,6 +89,15 @@ class BasicParser(Parser):
     def statement(self, p):
         return ('print_stmt_string', p.STRING)
 
+    @_('CREATE STRING')
+    def statement(self, p):
+        return ('create_stmt_string', p.STRING)
+
+    @_('CREATE RPAREN NAME LPAREN')
+    def statement(self, p):
+        return ('create_stmt_var', p.NAME)
+
+
     #for (x=5, 10): x
     @_('FOR RPAREN var_assign TO expr LPAREN THEN statement')
     def statement(self, p):
@@ -98,11 +121,11 @@ class BasicParser(Parser):
         return ('if_else_stmt', p.condition, ('branch', p.statement0, p.statement1))
 
     #Deprecated
-    @_('FUN NAME "(" ")" ARROW statement')
+    @_('FUN NAME RPAREN LPAREN ARROW statement')
     def statement(self, p):
         return ('fun_def', p.NAME, p.statement)
     #Deprecated
-    @_('NAME "(" ")"')
+    @_('NAME RPAREN LPAREN')
     def statement(self, p):
         return ('fun_call', p.NAME)
 

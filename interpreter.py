@@ -104,11 +104,11 @@ class BasicParser(Parser):
         return ('if_else_stmt', p.condition, ('branch', p.statement0, p.statement1))
 
     #Deprecated
-    @_('FUN NAME "(" ")" ARROW statement')
+    @_('FUN NAME RPAREN LPAREN ARROW statement')
     def statement(self, p):
         return ('fun_def', p.NAME, p.statement)
     #Deprecated
-    @_('NAME "(" ")"')
+    @_('NAME RPAREN LPAREN')
     def statement(self, p):
         return ('fun_call', p.NAME)
 
