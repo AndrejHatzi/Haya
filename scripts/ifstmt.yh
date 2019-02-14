@@ -1,0 +1,2 @@
+x = 5
+if x == 5: "checkresult".write("x is equal to 5")
