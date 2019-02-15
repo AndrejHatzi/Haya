@@ -7,9 +7,12 @@ import sys
 # Print stmt
 # EQEQ, LEQ
 #--------------------------
+
+#=> This version has parenthesis precedence!
 class BasicLexer(Lexer):
     tokens = { NAME, NUMBER, STRING, IF, FOR, PRINT, CREATEFILE, WRITE, EQEQ, TO}
     ignore = '\t '
+    ignore_newline = r'\n+'
 
     literals = { '=', '+', '-', '/', '*', '(', ')', ',', ';', ':', '.'}
 
@@ -125,6 +128,10 @@ class BasicParser(Parser):
         return ('condition_eqeq', p.expr0, p.expr1)
 
     @_('"-" expr %prec UMINUS')
+    def expr(self, p):
+        return p.expr
+
+    @_('"(" expr ")"')
     def expr(self, p):
         return p.expr
 
