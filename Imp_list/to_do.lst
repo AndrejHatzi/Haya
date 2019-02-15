@@ -1,2 +1,4 @@
-database impl
-delete variables
+database impl => in dev
+delete variables => dev lacks impl
+add colours to terminal
+multiline commands
