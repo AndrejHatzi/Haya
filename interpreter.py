@@ -1,14 +1,17 @@
 from sly import Lexer
 from sly import Parser
 import sys
+import sqlite3
 #--------------------------
 # While Loop
 # Del Var
 # Print stmt
 # EQEQ, LEQ
 #--------------------------
+
+#=> This version has parenthesis precedence!
 class BasicLexer(Lexer):
-    tokens = { NAME, NUMBER, STRING, IF, FOR, PRINT, CREATEFILE, WRITE, EQEQ, TO}
+    tokens = { NAME, NUMBER, STRING, IF, FOR, PRINT, DATABASE,CREATEFILE, WRITE, EQEQ, TO}
     ignore = '\t '
 
     literals = { '=', '+', '-', '/', '*', '(', ')', ',', ';', ':', '.'}
@@ -20,6 +23,7 @@ class BasicLexer(Lexer):
     TO = r','
     PRINT = r'print'
     CREATEFILE = r'createfile'
+    DATABASE = r'database'
     WRITE = 'write'
     NAME = r'[a-zA-Z_][a-zA-Z0-9_]*'
     STRING = r'\".*?\"'
@@ -96,6 +100,10 @@ class BasicParser(Parser):
     def statement(self, p):
         return ('createfile_stmt', p.STRING)
 
+    @_('DATABASE "(" STRING TO STRING ")"')
+    def statement(self, p):
+        return ('database_stmt', p.STRING0, p.STRING1)
+
     @_('STRING "." WRITE "(" STRING ")"')
     def statement(self, p):
         return ('add_to_file_stmt', p.STRING0 ,p.STRING1)
@@ -125,6 +133,10 @@ class BasicParser(Parser):
         return ('condition_eqeq', p.expr0, p.expr1)
 
     @_('"-" expr %prec UMINUS')
+    def expr(self, p):
+        return p.expr
+
+    @_('"(" expr ")"')
     def expr(self, p):
         return p.expr
 
@@ -232,6 +244,12 @@ class BasicExecute:
         if node[0] == 'print_stmt_string':
             res = self.walkTree(node[1][1:-1])
             print(res)
+
+        if node[0] == 'database_stmt':
+            print(node)
+            print(node[1], node[2])
+            connection = sqlite3.connect(node[1][1:-1])
+            cursor = connection.cursor()
 
         if node[0] == 'createfile_stmt':
             file : str = self.walkTree(node[1][1:-1])
