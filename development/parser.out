@@ -1,0 +1,999 @@
+Grammar:
+
+Rule 0     S' -> statement
+Rule 1     statement -> expr
+Rule 2     statement -> STRING . WRITE ( STRING )
+Rule 3     statement -> DATABASE ( STRING TO STRING )
+Rule 4     statement -> CREATEFILE ( STRING )
+Rule 5     statement -> PRINT ( STRING )
+Rule 6     statement -> PRINT ( statement )
+Rule 7     statement -> var_assign
+Rule 8     statement -> NAME ( )
+Rule 9     statement -> IF ( condition ) : statement
+Rule 10    statement -> FOR ( var_assign TO expr ) : statement
+Rule 11    statement -> NAME ( ) : statement
+Rule 12    statement -> <empty>
+Rule 13    var_assign -> NAME = statement
+Rule 14    var_assign -> NAME = STRING
+Rule 15    expr -> NUMBER
+Rule 16    expr -> NAME
+Rule 17    expr -> ( expr )
+Rule 18    expr -> - expr  [precedence=right, level=3]
+Rule 19    expr -> expr / expr  [precedence=left, level=2]
+Rule 20    expr -> expr * expr  [precedence=left, level=2]
+Rule 21    expr -> expr - expr  [precedence=left, level=1]
+Rule 22    expr -> expr + expr  [precedence=left, level=1]
+Rule 23    condition -> expr LEQ expr
+Rule 24    condition -> expr EQEQ expr
+
+Terminals, with rules where they appear:
+
+(                    : 2 3 4 5 6 8 9 10 11 17
+)                    : 2 3 4 5 6 8 9 10 11 17
+*                    : 20
++                    : 22
+-                    : 18 21
+.                    : 2
+/                    : 19
+:                    : 9 10 11
+=                    : 13 14
+CREATEFILE           : 4
+DATABASE             : 3
+EQEQ                 : 24
+FOR                  : 10
+IF                   : 9
+LEQ                  : 23
+NAME                 : 8 11 13 14 16
+NUMBER               : 15
+PRINT                : 5 6
+STRING               : 2 2 3 3 4 5 14
+TO                   : 3 10
+WRITE                : 2
+error                : 
+
+Nonterminals, with rules where they appear:
+
+condition            : 9
+expr                 : 1 10 17 18 19 19 20 20 21 21 22 22 23 23 24 24
+statement            : 6 9 10 11 13 0
+var_assign           : 7 10
+
+
+state 0
+
+    (0) S' -> . statement
+    (1) statement -> . expr
+    (2) statement -> . STRING . WRITE ( STRING )
+    (3) statement -> . DATABASE ( STRING TO STRING )
+    (4) statement -> . CREATEFILE ( STRING )
+    (5) statement -> . PRINT ( STRING )
+    (6) statement -> . PRINT ( statement )
+    (7) statement -> . var_assign
+    (8) statement -> . NAME ( )
+    (9) statement -> . IF ( condition ) : statement
+    (10) statement -> . FOR ( var_assign TO expr ) : statement
+    (11) statement -> . NAME ( ) : statement
+    (12) statement -> .
+    (15) expr -> . NUMBER
+    (16) expr -> . NAME
+    (17) expr -> . ( expr )
+    (18) expr -> . - expr
+    (19) expr -> . expr / expr
+    (20) expr -> . expr * expr
+    (21) expr -> . expr - expr
+    (22) expr -> . expr + expr
+    (13) var_assign -> . NAME = statement
+    (14) var_assign -> . NAME = STRING
+    STRING          shift and go to state 3
+    DATABASE        shift and go to state 5
+    CREATEFILE      shift and go to state 6
+    PRINT           shift and go to state 7
+    NAME            shift and go to state 9
+    IF              shift and go to state 10
+    FOR             shift and go to state 11
+    $end            reduce using rule 12 (statement -> .)
+    NUMBER          shift and go to state 12
+    (               shift and go to state 4
+    -               shift and go to state 13
+
+    statement                      shift and go to state 1
+    expr                           shift and go to state 2
+    var_assign                     shift and go to state 8
+
+state 1
+
+    (0) S' -> statement .
+
+
+state 2
+
+    (1) statement -> expr .
+    (19) expr -> expr . / expr
+    (20) expr -> expr . * expr
+    (21) expr -> expr . - expr
+    (22) expr -> expr . + expr
+    $end            reduce using rule 1 (statement -> expr .)
+    )               reduce using rule 1 (statement -> expr .)
+    TO              reduce using rule 1 (statement -> expr .)
+    /               shift and go to state 14
+    *               shift and go to state 15
+    -               shift and go to state 16
+    +               shift and go to state 17
+
+
+state 3
+
+    (2) statement -> STRING . . WRITE ( STRING )
+    .               shift and go to state 18
+
+
+state 4
+
+    (17) expr -> ( . expr )
+    (15) expr -> . NUMBER
+    (16) expr -> . NAME
+    (17) expr -> . ( expr )
+    (18) expr -> . - expr
+    (19) expr -> . expr / expr
+    (20) expr -> . expr * expr
+    (21) expr -> . expr - expr
+    (22) expr -> . expr + expr
+    NUMBER          shift and go to state 12
+    NAME            shift and go to state 20
+    (               shift and go to state 4
+    -               shift and go to state 13
+
+    expr                           shift and go to state 19
+
+state 5
+
+    (3) statement -> DATABASE . ( STRING TO STRING )
+    (               shift and go to state 21
+
+
+state 6
+
+    (4) statement -> CREATEFILE . ( STRING )
+    (               shift and go to state 22
+
+
+state 7
+
+    (5) statement -> PRINT . ( STRING )
+    (6) statement -> PRINT . ( statement )
+    (               shift and go to state 23
+
+
+state 8
+
+    (7) statement -> var_assign .
+    $end            reduce using rule 7 (statement -> var_assign .)
+    )               reduce using rule 7 (statement -> var_assign .)
+    TO              reduce using rule 7 (statement -> var_assign .)
+
+
+state 9
+
+    (8) statement -> NAME . ( )
+    (11) statement -> NAME . ( ) : statement
+    (16) expr -> NAME .
+    (13) var_assign -> NAME . = statement
+    (14) var_assign -> NAME . = STRING
+    (               shift and go to state 24
+    /               reduce using rule 16 (expr -> NAME .)
+    *               reduce using rule 16 (expr -> NAME .)
+    -               reduce using rule 16 (expr -> NAME .)
+    +               reduce using rule 16 (expr -> NAME .)
+    $end            reduce using rule 16 (expr -> NAME .)
+    )               reduce using rule 16 (expr -> NAME .)
+    TO              reduce using rule 16 (expr -> NAME .)
+    =               shift and go to state 25
+
+
+state 10
+
+    (9) statement -> IF . ( condition ) : statement
+    (               shift and go to state 26
+
+
+state 11
+
+    (10) statement -> FOR . ( var_assign TO expr ) : statement
+    (               shift and go to state 27
+
+
+state 12
+
+    (15) expr -> NUMBER .
+    /               reduce using rule 15 (expr -> NUMBER .)
+    *               reduce using rule 15 (expr -> NUMBER .)
+    -               reduce using rule 15 (expr -> NUMBER .)
+    +               reduce using rule 15 (expr -> NUMBER .)
+    $end            reduce using rule 15 (expr -> NUMBER .)
+    )               reduce using rule 15 (expr -> NUMBER .)
+    TO              reduce using rule 15 (expr -> NUMBER .)
+    LEQ             reduce using rule 15 (expr -> NUMBER .)
+    EQEQ            reduce using rule 15 (expr -> NUMBER .)
+
+
+state 13
+
+    (18) expr -> - . expr
+    (15) expr -> . NUMBER
+    (16) expr -> . NAME
+    (17) expr -> . ( expr )
+    (18) expr -> . - expr
+    (19) expr -> . expr / expr
+    (20) expr -> . expr * expr
+    (21) expr -> . expr - expr
+    (22) expr -> . expr + expr
+    NUMBER          shift and go to state 12
+    NAME            shift and go to state 20
+    (               shift and go to state 4
+    -               shift and go to state 13
+
+    expr                           shift and go to state 28
+
+state 14
+
+    (19) expr -> expr / . expr
+    (15) expr -> . NUMBER
+    (16) expr -> . NAME
+    (17) expr -> . ( expr )
+    (18) expr -> . - expr
+    (19) expr -> . expr / expr
+    (20) expr -> . expr * expr
+    (21) expr -> . expr - expr
+    (22) expr -> . expr + expr
+    NUMBER          shift and go to state 12
+    NAME            shift and go to state 20
+    (               shift and go to state 4
+    -               shift and go to state 13
+
+    expr                           shift and go to state 29
+
+state 15
+
+    (20) expr -> expr * . expr
+    (15) expr -> . NUMBER
+    (16) expr -> . NAME
+    (17) expr -> . ( expr )
+    (18) expr -> . - expr
+    (19) expr -> . expr / expr
+    (20) expr -> . expr * expr
+    (21) expr -> . expr - expr
+    (22) expr -> . expr + expr
+    NUMBER          shift and go to state 12
+    NAME            shift and go to state 20
+    (               shift and go to state 4
+    -               shift and go to state 13
+
+    expr                           shift and go to state 30
+
+state 16
+
+    (21) expr -> expr - . expr
+    (15) expr -> . NUMBER
+    (16) expr -> . NAME
+    (17) expr -> . ( expr )
+    (18) expr -> . - expr
+    (19) expr -> . expr / expr
+    (20) expr -> . expr * expr
+    (21) expr -> . expr - expr
+    (22) expr -> . expr + expr
+    NUMBER          shift and go to state 12
+    NAME            shift and go to state 20
+    (               shift and go to state 4
+    -               shift and go to state 13
+
+    expr                           shift and go to state 31
+
+state 17
+
+    (22) expr -> expr + . expr
+    (15) expr -> . NUMBER
+    (16) expr -> . NAME
+    (17) expr -> . ( expr )
+    (18) expr -> . - expr
+    (19) expr -> . expr / expr
+    (20) expr -> . expr * expr
+    (21) expr -> . expr - expr
+    (22) expr -> . expr + expr
+    NUMBER          shift and go to state 12
+    NAME            shift and go to state 20
+    (               shift and go to state 4
+    -               shift and go to state 13
+
+    expr                           shift and go to state 32
+
+state 18
+
+    (2) statement -> STRING . . WRITE ( STRING )
+    WRITE           shift and go to state 33
+
+
+state 19
+
+    (17) expr -> ( expr . )
+    (19) expr -> expr . / expr
+    (20) expr -> expr . * expr
+    (21) expr -> expr . - expr
+    (22) expr -> expr . + expr
+    )               shift and go to state 34
+    /               shift and go to state 14
+    *               shift and go to state 15
+    -               shift and go to state 16
+    +               shift and go to state 17
+
+
+state 20
+
+    (16) expr -> NAME .
+    )               reduce using rule 16 (expr -> NAME .)
+    /               reduce using rule 16 (expr -> NAME .)
+    *               reduce using rule 16 (expr -> NAME .)
+    -               reduce using rule 16 (expr -> NAME .)
+    +               reduce using rule 16 (expr -> NAME .)
+    $end            reduce using rule 16 (expr -> NAME .)
+    TO              reduce using rule 16 (expr -> NAME .)
+    LEQ             reduce using rule 16 (expr -> NAME .)
+    EQEQ            reduce using rule 16 (expr -> NAME .)
+
+
+state 21
+
+    (3) statement -> DATABASE ( . STRING TO STRING )
+    STRING          shift and go to state 35
+
+
+state 22
+
+    (4) statement -> CREATEFILE ( . STRING )
+    STRING          shift and go to state 36
+
+
+state 23
+
+    (5) statement -> PRINT ( . STRING )
+    (6) statement -> PRINT ( . statement )
+    (1) statement -> . expr
+    (2) statement -> . STRING . WRITE ( STRING )
+    (3) statement -> . DATABASE ( STRING TO STRING )
+    (4) statement -> . CREATEFILE ( STRING )
+    (5) statement -> . PRINT ( STRING )
+    (6) statement -> . PRINT ( statement )
+    (7) statement -> . var_assign
+    (8) statement -> . NAME ( )
+    (9) statement -> . IF ( condition ) : statement
+    (10) statement -> . FOR ( var_assign TO expr ) : statement
+    (11) statement -> . NAME ( ) : statement
+    (12) statement -> .
+    (15) expr -> . NUMBER
+    (16) expr -> . NAME
+    (17) expr -> . ( expr )
+    (18) expr -> . - expr
+    (19) expr -> . expr / expr
+    (20) expr -> . expr * expr
+    (21) expr -> . expr - expr
+    (22) expr -> . expr + expr
+    (13) var_assign -> . NAME = statement
+    (14) var_assign -> . NAME = STRING
+    STRING          shift and go to state 37
+    DATABASE        shift and go to state 5
+    CREATEFILE      shift and go to state 6
+    PRINT           shift and go to state 7
+    NAME            shift and go to state 9
+    IF              shift and go to state 10
+    FOR             shift and go to state 11
+    )               reduce using rule 12 (statement -> .)
+    NUMBER          shift and go to state 12
+    (               shift and go to state 4
+    -               shift and go to state 13
+
+    statement                      shift and go to state 38
+    expr                           shift and go to state 2
+    var_assign                     shift and go to state 8
+
+state 24
+
+    (8) statement -> NAME ( . )
+    (11) statement -> NAME ( . ) : statement
+    )               shift and go to state 39
+
+
+state 25
+
+    (13) var_assign -> NAME = . statement
+    (14) var_assign -> NAME = . STRING
+    (1) statement -> . expr
+    (2) statement -> . STRING . WRITE ( STRING )
+    (3) statement -> . DATABASE ( STRING TO STRING )
+    (4) statement -> . CREATEFILE ( STRING )
+    (5) statement -> . PRINT ( STRING )
+    (6) statement -> . PRINT ( statement )
+    (7) statement -> . var_assign
+    (8) statement -> . NAME ( )
+    (9) statement -> . IF ( condition ) : statement
+    (10) statement -> . FOR ( var_assign TO expr ) : statement
+    (11) statement -> . NAME ( ) : statement
+    (12) statement -> .
+    (15) expr -> . NUMBER
+    (16) expr -> . NAME
+    (17) expr -> . ( expr )
+    (18) expr -> . - expr
+    (19) expr -> . expr / expr
+    (20) expr -> . expr * expr
+    (21) expr -> . expr - expr
+    (22) expr -> . expr + expr
+    (13) var_assign -> . NAME = statement
+    (14) var_assign -> . NAME = STRING
+    STRING          shift and go to state 41
+    DATABASE        shift and go to state 5
+    CREATEFILE      shift and go to state 6
+    PRINT           shift and go to state 7
+    NAME            shift and go to state 9
+    IF              shift and go to state 10
+    FOR             shift and go to state 11
+    $end            reduce using rule 12 (statement -> .)
+    )               reduce using rule 12 (statement -> .)
+    TO              reduce using rule 12 (statement -> .)
+    NUMBER          shift and go to state 12
+    (               shift and go to state 4
+    -               shift and go to state 13
+
+    statement                      shift and go to state 40
+    expr                           shift and go to state 2
+    var_assign                     shift and go to state 8
+
+state 26
+
+    (9) statement -> IF ( . condition ) : statement
+    (23) condition -> . expr LEQ expr
+    (24) condition -> . expr EQEQ expr
+    (15) expr -> . NUMBER
+    (16) expr -> . NAME
+    (17) expr -> . ( expr )
+    (18) expr -> . - expr
+    (19) expr -> . expr / expr
+    (20) expr -> . expr * expr
+    (21) expr -> . expr - expr
+    (22) expr -> . expr + expr
+    NUMBER          shift and go to state 12
+    NAME            shift and go to state 20
+    (               shift and go to state 4
+    -               shift and go to state 13
+
+    condition                      shift and go to state 42
+    expr                           shift and go to state 43
+
+state 27
+
+    (10) statement -> FOR ( . var_assign TO expr ) : statement
+    (13) var_assign -> . NAME = statement
+    (14) var_assign -> . NAME = STRING
+    NAME            shift and go to state 45
+
+    var_assign                     shift and go to state 44
+
+state 28
+
+    (18) expr -> - expr .
+    (19) expr -> expr . / expr
+    (20) expr -> expr . * expr
+    (21) expr -> expr . - expr
+    (22) expr -> expr . + expr
+    /               reduce using rule 18 (expr -> - expr .)
+    *               reduce using rule 18 (expr -> - expr .)
+    -               reduce using rule 18 (expr -> - expr .)
+    +               reduce using rule 18 (expr -> - expr .)
+    $end            reduce using rule 18 (expr -> - expr .)
+    )               reduce using rule 18 (expr -> - expr .)
+    TO              reduce using rule 18 (expr -> - expr .)
+    LEQ             reduce using rule 18 (expr -> - expr .)
+    EQEQ            reduce using rule 18 (expr -> - expr .)
+
+
+state 29
+
+    (19) expr -> expr / expr .
+    (19) expr -> expr . / expr
+    (20) expr -> expr . * expr
+    (21) expr -> expr . - expr
+    (22) expr -> expr . + expr
+    /               reduce using rule 19 (expr -> expr / expr .)
+    *               reduce using rule 19 (expr -> expr / expr .)
+    -               reduce using rule 19 (expr -> expr / expr .)
+    +               reduce using rule 19 (expr -> expr / expr .)
+    $end            reduce using rule 19 (expr -> expr / expr .)
+    )               reduce using rule 19 (expr -> expr / expr .)
+    TO              reduce using rule 19 (expr -> expr / expr .)
+    LEQ             reduce using rule 19 (expr -> expr / expr .)
+    EQEQ            reduce using rule 19 (expr -> expr / expr .)
+
+
+state 30
+
+    (20) expr -> expr * expr .
+    (19) expr -> expr . / expr
+    (20) expr -> expr . * expr
+    (21) expr -> expr . - expr
+    (22) expr -> expr . + expr
+    /               reduce using rule 20 (expr -> expr * expr .)
+    *               reduce using rule 20 (expr -> expr * expr .)
+    -               reduce using rule 20 (expr -> expr * expr .)
+    +               reduce using rule 20 (expr -> expr * expr .)
+    $end            reduce using rule 20 (expr -> expr * expr .)
+    )               reduce using rule 20 (expr -> expr * expr .)
+    TO              reduce using rule 20 (expr -> expr * expr .)
+    LEQ             reduce using rule 20 (expr -> expr * expr .)
+    EQEQ            reduce using rule 20 (expr -> expr * expr .)
+
+
+state 31
+
+    (21) expr -> expr - expr .
+    (19) expr -> expr . / expr
+    (20) expr -> expr . * expr
+    (21) expr -> expr . - expr
+    (22) expr -> expr . + expr
+    -               reduce using rule 21 (expr -> expr - expr .)
+    +               reduce using rule 21 (expr -> expr - expr .)
+    $end            reduce using rule 21 (expr -> expr - expr .)
+    )               reduce using rule 21 (expr -> expr - expr .)
+    TO              reduce using rule 21 (expr -> expr - expr .)
+    LEQ             reduce using rule 21 (expr -> expr - expr .)
+    EQEQ            reduce using rule 21 (expr -> expr - expr .)
+    /               shift and go to state 14
+    *               shift and go to state 15
+
+
+state 32
+
+    (22) expr -> expr + expr .
+    (19) expr -> expr . / expr
+    (20) expr -> expr . * expr
+    (21) expr -> expr . - expr
+    (22) expr -> expr . + expr
+    -               reduce using rule 22 (expr -> expr + expr .)
+    +               reduce using rule 22 (expr -> expr + expr .)
+    $end            reduce using rule 22 (expr -> expr + expr .)
+    )               reduce using rule 22 (expr -> expr + expr .)
+    TO              reduce using rule 22 (expr -> expr + expr .)
+    LEQ             reduce using rule 22 (expr -> expr + expr .)
+    EQEQ            reduce using rule 22 (expr -> expr + expr .)
+    /               shift and go to state 14
+    *               shift and go to state 15
+
+
+state 33
+
+    (2) statement -> STRING . WRITE . ( STRING )
+    (               shift and go to state 46
+
+
+state 34
+
+    (17) expr -> ( expr ) .
+    /               reduce using rule 17 (expr -> ( expr ) .)
+    *               reduce using rule 17 (expr -> ( expr ) .)
+    -               reduce using rule 17 (expr -> ( expr ) .)
+    +               reduce using rule 17 (expr -> ( expr ) .)
+    $end            reduce using rule 17 (expr -> ( expr ) .)
+    )               reduce using rule 17 (expr -> ( expr ) .)
+    TO              reduce using rule 17 (expr -> ( expr ) .)
+    LEQ             reduce using rule 17 (expr -> ( expr ) .)
+    EQEQ            reduce using rule 17 (expr -> ( expr ) .)
+
+
+state 35
+
+    (3) statement -> DATABASE ( STRING . TO STRING )
+    TO              shift and go to state 47
+
+
+state 36
+
+    (4) statement -> CREATEFILE ( STRING . )
+    )               shift and go to state 48
+
+
+state 37
+
+    (5) statement -> PRINT ( STRING . )
+    (2) statement -> STRING . . WRITE ( STRING )
+    )               shift and go to state 49
+    .               shift and go to state 18
+
+
+state 38
+
+    (6) statement -> PRINT ( statement . )
+    )               shift and go to state 50
+
+
+state 39
+
+    (8) statement -> NAME ( ) .
+    (11) statement -> NAME ( ) . : statement
+    $end            reduce using rule 8 (statement -> NAME ( ) .)
+    )               reduce using rule 8 (statement -> NAME ( ) .)
+    TO              reduce using rule 8 (statement -> NAME ( ) .)
+    :               shift and go to state 51
+
+
+state 40
+
+    (13) var_assign -> NAME = statement .
+    $end            reduce using rule 13 (var_assign -> NAME = statement .)
+    )               reduce using rule 13 (var_assign -> NAME = statement .)
+    TO              reduce using rule 13 (var_assign -> NAME = statement .)
+
+
+state 41
+
+    (14) var_assign -> NAME = STRING .
+    (2) statement -> STRING . . WRITE ( STRING )
+    $end            reduce using rule 14 (var_assign -> NAME = STRING .)
+    )               reduce using rule 14 (var_assign -> NAME = STRING .)
+    TO              reduce using rule 14 (var_assign -> NAME = STRING .)
+    .               shift and go to state 18
+
+
+state 42
+
+    (9) statement -> IF ( condition . ) : statement
+    )               shift and go to state 52
+
+
+state 43
+
+    (23) condition -> expr . LEQ expr
+    (24) condition -> expr . EQEQ expr
+    (19) expr -> expr . / expr
+    (20) expr -> expr . * expr
+    (21) expr -> expr . - expr
+    (22) expr -> expr . + expr
+    LEQ             shift and go to state 53
+    EQEQ            shift and go to state 54
+    /               shift and go to state 14
+    *               shift and go to state 15
+    -               shift and go to state 16
+    +               shift and go to state 17
+
+
+state 44
+
+    (10) statement -> FOR ( var_assign . TO expr ) : statement
+    TO              shift and go to state 55
+
+
+state 45
+
+    (13) var_assign -> NAME . = statement
+    (14) var_assign -> NAME . = STRING
+    =               shift and go to state 25
+
+
+state 46
+
+    (2) statement -> STRING . WRITE ( . STRING )
+    STRING          shift and go to state 56
+
+
+state 47
+
+    (3) statement -> DATABASE ( STRING TO . STRING )
+    STRING          shift and go to state 57
+
+
+state 48
+
+    (4) statement -> CREATEFILE ( STRING ) .
+    $end            reduce using rule 4 (statement -> CREATEFILE ( STRING ) .)
+    )               reduce using rule 4 (statement -> CREATEFILE ( STRING ) .)
+    TO              reduce using rule 4 (statement -> CREATEFILE ( STRING ) .)
+
+
+state 49
+
+    (5) statement -> PRINT ( STRING ) .
+    $end            reduce using rule 5 (statement -> PRINT ( STRING ) .)
+    )               reduce using rule 5 (statement -> PRINT ( STRING ) .)
+    TO              reduce using rule 5 (statement -> PRINT ( STRING ) .)
+
+
+state 50
+
+    (6) statement -> PRINT ( statement ) .
+    $end            reduce using rule 6 (statement -> PRINT ( statement ) .)
+    )               reduce using rule 6 (statement -> PRINT ( statement ) .)
+    TO              reduce using rule 6 (statement -> PRINT ( statement ) .)
+
+
+state 51
+
+    (11) statement -> NAME ( ) : . statement
+    (1) statement -> . expr
+    (2) statement -> . STRING . WRITE ( STRING )
+    (3) statement -> . DATABASE ( STRING TO STRING )
+    (4) statement -> . CREATEFILE ( STRING )
+    (5) statement -> . PRINT ( STRING )
+    (6) statement -> . PRINT ( statement )
+    (7) statement -> . var_assign
+    (8) statement -> . NAME ( )
+    (9) statement -> . IF ( condition ) : statement
+    (10) statement -> . FOR ( var_assign TO expr ) : statement
+    (11) statement -> . NAME ( ) : statement
+    (12) statement -> .
+    (15) expr -> . NUMBER
+    (16) expr -> . NAME
+    (17) expr -> . ( expr )
+    (18) expr -> . - expr
+    (19) expr -> . expr / expr
+    (20) expr -> . expr * expr
+    (21) expr -> . expr - expr
+    (22) expr -> . expr + expr
+    (13) var_assign -> . NAME = statement
+    (14) var_assign -> . NAME = STRING
+    STRING          shift and go to state 3
+    DATABASE        shift and go to state 5
+    CREATEFILE      shift and go to state 6
+    PRINT           shift and go to state 7
+    NAME            shift and go to state 9
+    IF              shift and go to state 10
+    FOR             shift and go to state 11
+    $end            reduce using rule 12 (statement -> .)
+    )               reduce using rule 12 (statement -> .)
+    TO              reduce using rule 12 (statement -> .)
+    NUMBER          shift and go to state 12
+    (               shift and go to state 4
+    -               shift and go to state 13
+
+    statement                      shift and go to state 58
+    expr                           shift and go to state 2
+    var_assign                     shift and go to state 8
+
+state 52
+
+    (9) statement -> IF ( condition ) . : statement
+    :               shift and go to state 59
+
+
+state 53
+
+    (23) condition -> expr LEQ . expr
+    (15) expr -> . NUMBER
+    (16) expr -> . NAME
+    (17) expr -> . ( expr )
+    (18) expr -> . - expr
+    (19) expr -> . expr / expr
+    (20) expr -> . expr * expr
+    (21) expr -> . expr - expr
+    (22) expr -> . expr + expr
+    NUMBER          shift and go to state 12
+    NAME            shift and go to state 20
+    (               shift and go to state 4
+    -               shift and go to state 13
+
+    expr                           shift and go to state 60
+
+state 54
+
+    (24) condition -> expr EQEQ . expr
+    (15) expr -> . NUMBER
+    (16) expr -> . NAME
+    (17) expr -> . ( expr )
+    (18) expr -> . - expr
+    (19) expr -> . expr / expr
+    (20) expr -> . expr * expr
+    (21) expr -> . expr - expr
+    (22) expr -> . expr + expr
+    NUMBER          shift and go to state 12
+    NAME            shift and go to state 20
+    (               shift and go to state 4
+    -               shift and go to state 13
+
+    expr                           shift and go to state 61
+
+state 55
+
+    (10) statement -> FOR ( var_assign TO . expr ) : statement
+    (15) expr -> . NUMBER
+    (16) expr -> . NAME
+    (17) expr -> . ( expr )
+    (18) expr -> . - expr
+    (19) expr -> . expr / expr
+    (20) expr -> . expr * expr
+    (21) expr -> . expr - expr
+    (22) expr -> . expr + expr
+    NUMBER          shift and go to state 12
+    NAME            shift and go to state 20
+    (               shift and go to state 4
+    -               shift and go to state 13
+
+    expr                           shift and go to state 62
+
+state 56
+
+    (2) statement -> STRING . WRITE ( STRING . )
+    )               shift and go to state 63
+
+
+state 57
+
+    (3) statement -> DATABASE ( STRING TO STRING . )
+    )               shift and go to state 64
+
+
+state 58
+
+    (11) statement -> NAME ( ) : statement .
+    $end            reduce using rule 11 (statement -> NAME ( ) : statement .)
+    )               reduce using rule 11 (statement -> NAME ( ) : statement .)
+    TO              reduce using rule 11 (statement -> NAME ( ) : statement .)
+
+
+state 59
+
+    (9) statement -> IF ( condition ) : . statement
+    (1) statement -> . expr
+    (2) statement -> . STRING . WRITE ( STRING )
+    (3) statement -> . DATABASE ( STRING TO STRING )
+    (4) statement -> . CREATEFILE ( STRING )
+    (5) statement -> . PRINT ( STRING )
+    (6) statement -> . PRINT ( statement )
+    (7) statement -> . var_assign
+    (8) statement -> . NAME ( )
+    (9) statement -> . IF ( condition ) : statement
+    (10) statement -> . FOR ( var_assign TO expr ) : statement
+    (11) statement -> . NAME ( ) : statement
+    (12) statement -> .
+    (15) expr -> . NUMBER
+    (16) expr -> . NAME
+    (17) expr -> . ( expr )
+    (18) expr -> . - expr
+    (19) expr -> . expr / expr
+    (20) expr -> . expr * expr
+    (21) expr -> . expr - expr
+    (22) expr -> . expr + expr
+    (13) var_assign -> . NAME = statement
+    (14) var_assign -> . NAME = STRING
+    STRING          shift and go to state 3
+    DATABASE        shift and go to state 5
+    CREATEFILE      shift and go to state 6
+    PRINT           shift and go to state 7
+    NAME            shift and go to state 9
+    IF              shift and go to state 10
+    FOR             shift and go to state 11
+    $end            reduce using rule 12 (statement -> .)
+    )               reduce using rule 12 (statement -> .)
+    TO              reduce using rule 12 (statement -> .)
+    NUMBER          shift and go to state 12
+    (               shift and go to state 4
+    -               shift and go to state 13
+
+    statement                      shift and go to state 65
+    expr                           shift and go to state 2
+    var_assign                     shift and go to state 8
+
+state 60
+
+    (23) condition -> expr LEQ expr .
+    (19) expr -> expr . / expr
+    (20) expr -> expr . * expr
+    (21) expr -> expr . - expr
+    (22) expr -> expr . + expr
+    )               reduce using rule 23 (condition -> expr LEQ expr .)
+    /               shift and go to state 14
+    *               shift and go to state 15
+    -               shift and go to state 16
+    +               shift and go to state 17
+
+
+state 61
+
+    (24) condition -> expr EQEQ expr .
+    (19) expr -> expr . / expr
+    (20) expr -> expr . * expr
+    (21) expr -> expr . - expr
+    (22) expr -> expr . + expr
+    )               reduce using rule 24 (condition -> expr EQEQ expr .)
+    /               shift and go to state 14
+    *               shift and go to state 15
+    -               shift and go to state 16
+    +               shift and go to state 17
+
+
+state 62
+
+    (10) statement -> FOR ( var_assign TO expr . ) : statement
+    (19) expr -> expr . / expr
+    (20) expr -> expr . * expr
+    (21) expr -> expr . - expr
+    (22) expr -> expr . + expr
+    )               shift and go to state 66
+    /               shift and go to state 14
+    *               shift and go to state 15
+    -               shift and go to state 16
+    +               shift and go to state 17
+
+
+state 63
+
+    (2) statement -> STRING . WRITE ( STRING ) .
+    $end            reduce using rule 2 (statement -> STRING . WRITE ( STRING ) .)
+    )               reduce using rule 2 (statement -> STRING . WRITE ( STRING ) .)
+    TO              reduce using rule 2 (statement -> STRING . WRITE ( STRING ) .)
+
+
+state 64
+
+    (3) statement -> DATABASE ( STRING TO STRING ) .
+    $end            reduce using rule 3 (statement -> DATABASE ( STRING TO STRING ) .)
+    )               reduce using rule 3 (statement -> DATABASE ( STRING TO STRING ) .)
+    TO              reduce using rule 3 (statement -> DATABASE ( STRING TO STRING ) .)
+
+
+state 65
+
+    (9) statement -> IF ( condition ) : statement .
+    $end            reduce using rule 9 (statement -> IF ( condition ) : statement .)
+    )               reduce using rule 9 (statement -> IF ( condition ) : statement .)
+    TO              reduce using rule 9 (statement -> IF ( condition ) : statement .)
+
+
+state 66
+
+    (10) statement -> FOR ( var_assign TO expr ) . : statement
+    :               shift and go to state 67
+
+
+state 67
+
+    (10) statement -> FOR ( var_assign TO expr ) : . statement
+    (1) statement -> . expr
+    (2) statement -> . STRING . WRITE ( STRING )
+    (3) statement -> . DATABASE ( STRING TO STRING )
+    (4) statement -> . CREATEFILE ( STRING )
+    (5) statement -> . PRINT ( STRING )
+    (6) statement -> . PRINT ( statement )
+    (7) statement -> . var_assign
+    (8) statement -> . NAME ( )
+    (9) statement -> . IF ( condition ) : statement
+    (10) statement -> . FOR ( var_assign TO expr ) : statement
+    (11) statement -> . NAME ( ) : statement
+    (12) statement -> .
+    (15) expr -> . NUMBER
+    (16) expr -> . NAME
+    (17) expr -> . ( expr )
+    (18) expr -> . - expr
+    (19) expr -> . expr / expr
+    (20) expr -> . expr * expr
+    (21) expr -> . expr - expr
+    (22) expr -> . expr + expr
+    (13) var_assign -> . NAME = statement
+    (14) var_assign -> . NAME = STRING
+    STRING          shift and go to state 3
+    DATABASE        shift and go to state 5
+    CREATEFILE      shift and go to state 6
+    PRINT           shift and go to state 7
+    NAME            shift and go to state 9
+    IF              shift and go to state 10
+    FOR             shift and go to state 11
+    $end            reduce using rule 12 (statement -> .)
+    )               reduce using rule 12 (statement -> .)
+    TO              reduce using rule 12 (statement -> .)
+    NUMBER          shift and go to state 12
+    (               shift and go to state 4
+    -               shift and go to state 13
+
+    var_assign                     shift and go to state 8
+    expr                           shift and go to state 2
+    statement                      shift and go to state 68
+
+state 68
+
+    (10) statement -> FOR ( var_assign TO expr ) : statement .
+    $end            reduce using rule 10 (statement -> FOR ( var_assign TO expr ) : statement .)
+    )               reduce using rule 10 (statement -> FOR ( var_assign TO expr ) : statement .)
+    TO              reduce using rule 10 (statement -> FOR ( var_assign TO expr ) : statement .)
