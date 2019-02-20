@@ -59,7 +59,7 @@ class BasicParser(Parser):
     precedence = (
         ('left', '+', '-'),
         ('left', '*', '/'),
-        ('right', 'UMINUS'),
+        ('right', 'UMINUS', ','),
         )
 
     def __init__(self):
@@ -73,9 +73,15 @@ class BasicParser(Parser):
     def statement(self, p):
         return ('if_stmt', p.condition, ('branch', p.statement0, p.statement1))
 
-    @_('PRINT "(" STRING ")"')
+    @_('PRINT "(" expr ")"')
+    #@_('PRINT ARGS')
     def statement(self, p):
-        return ('print_stmt', line)
+        return ('print_stmt_args', p.expr)
+    
+    @_('PRINT "(" STRING ")"')
+    #@_('PRINT ARGS')
+    def statement(self, p):
+        return ('print_stmt', p.STRING)
 
     @_('NAME "(" ")" ":" statement')
     def statement(self, p):
@@ -106,6 +112,8 @@ class BasicParser(Parser):
     def statement(self, p):
         return (p.expr)
 
+    
+
     @_('expr "+" expr')
     def expr(self, p):
         return ('add', p.expr0, p.expr1)
@@ -121,6 +129,10 @@ class BasicParser(Parser):
     @_('expr "/" expr')
     def expr(self, p):
         return ('div', p.expr0, p.expr1)
+
+    @_('expr "," expr')
+    def expr(self, p):
+        return ('virgulae', p.expr0, p.expr1)
 
     @_('"-" expr %prec UMINUS')
     def expr(self, p):
@@ -198,6 +210,8 @@ class BasicExecute:
             return self.walkTree(node[1]) * self.walkTree(node[2])
         elif node[0] == 'div':
             return self.walkTree(node[1]) / self.walkTree(node[2])
+        elif node[0] == 'virgulae':
+            return self.walkTree(node[1]), self.walkTree(node[2])
 
         if node[0] == 'var_assign':
             self.env[node[1]] = self.walkTree(node[2])
@@ -212,6 +226,10 @@ class BasicExecute:
 
         if node[0] == 'condition_eqeq':
             return self.walkTree(node[1]) == self.walkTree(node[2])
+
+        if node[0] == 'print_stmt_args':
+            #print(node[1][1][1])
+            print(node[1])
 
 if __name__ == '__main__':
     lexer = BasicLexer()
