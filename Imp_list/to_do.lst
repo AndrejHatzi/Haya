@@ -1,5 +1,6 @@
 database impl => in dev
 delete variables => dev lacks impl
-add colours to terminal
-multiline commands
-input
+add colours to terminal => nidev
+multiline commands => nidev
+input => nidev
+multiple arguments => dev lacks impl
