@@ -132,7 +132,7 @@ class BasicParser(Parser):
 
     @_('expr "," expr')
     def expr(self, p):
-        return ('virgulae', p.expr0, p.expr1)
+        return (p.expr0, p.expr1)
 
     @_('"-" expr %prec UMINUS')
     def expr(self, p):
@@ -211,7 +211,8 @@ class BasicExecute:
         elif node[0] == 'div':
             return self.walkTree(node[1]) / self.walkTree(node[2])
         elif node[0] == 'virgulae':
-            return self.walkTree(node[1]), self.walkTree(node[2])
+            #return (self.walkTree(node[1]), self.walkTree(node[2]))
+            return (self.walkTree(node[1]), self.walkTree(node[2]))
 
         if node[0] == 'var_assign':
             self.env[node[1]] = self.walkTree(node[2])
@@ -227,9 +228,23 @@ class BasicExecute:
         if node[0] == 'condition_eqeq':
             return self.walkTree(node[1]) == self.walkTree(node[2])
 
+        #print print(self.walktree[i]) => qlqr coisa assim!
+        #ver docs => do que foi feito anteriormente em relacao ao print
+        #=> magrs => tem mesmo de levar um return type x => e checkar se o type e o type para nao colocar o programa em erros!
         if node[0] == 'print_stmt_args':
+            i : int;
+            strg : str = '';
+            for i in range(len(node[1])):
+                try:
+                    strg += ('{} '.format(self.env[node[1][i][1]]))
+                except LookupError:
+                    print("Undefined variable '"+node[1][i][1]+"' found!")
+                    return 0
+            print(strg)
+                          
+                
+            #print(node[1], len(node[1]))
             #print(node[1][1][1])
-            print(node[1])
 
 if __name__ == '__main__':
     lexer = BasicLexer()
@@ -241,7 +256,7 @@ if __name__ == '__main__':
         except EOFError:
             break
         if text:
-            #tree = parser.parse(lexer.tokenize(text))
-            #BasicExecute(tree, env)
-            parsetree = parser.parse(lexer.tokenize(text))
-            print(parsetree)
+            tree = parser.parse(lexer.tokenize(text))
+            BasicExecute(tree, env)
+            #parsetree = parser.parse(lexer.tokenize(text))
+            #print(parsetree)
