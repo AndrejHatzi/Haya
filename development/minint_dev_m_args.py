@@ -17,7 +17,6 @@ def opt_item(self, p):
      return None
 '''
 
-
 class BasicLexer(Lexer):
     tokens = { NAME, NUMBER, STRING, IF, ELSE, PRINT, EQEQ}
     ignore = '\t '
@@ -40,15 +39,7 @@ class BasicLexer(Lexer):
     @_(r'#.*')
     def COMMENT(self, t):
         pass
-
-#    @_(r'\(')
-#    def rparen(self, t):
-#        return t.rparen
-
-#    @_(r'\)')
-#    def lparen(self, t):
-#        return t.lparen
-
+	
     @_(r'\n+')
     def newline(self,t ):
         self.lineno = t.value.count('\n')
@@ -77,7 +68,7 @@ class BasicParser(Parser):
     #@_('PRINT ARGS')
     def statement(self, p):
         return ('print_stmt_args', p.expr)
-    
+
     @_('PRINT "(" STRING ")"')
     #@_('PRINT ARGS')
     def statement(self, p):
@@ -112,7 +103,7 @@ class BasicParser(Parser):
     def statement(self, p):
         return (p.expr)
 
-    
+
 
     @_('expr "+" expr')
     def expr(self, p):
@@ -132,7 +123,7 @@ class BasicParser(Parser):
 
     @_('expr "," expr')
     def expr(self, p):
-        return (p.expr0, p.expr1)
+        return ('args', p.expr0, p.expr1)
 
     @_('"-" expr %prec UMINUS')
     def expr(self, p):
@@ -232,6 +223,28 @@ class BasicExecute:
         #ver docs => do que foi feito anteriormente em relacao ao print
         #=> magrs => tem mesmo de levar um return type x => e checkar se o type e o type para nao colocar o programa em erros!
         if node[0] == 'print_stmt_args':
+            #print(node)
+            #print(node[1])
+            res = self.walkTree(node[1])
+            print(res, len(node[1]))
+            print(node[1])
+            print(node.count(args))
+	    #res = self.walkTree(node[1])
+	    #print(res)
+            #if (node[1][0]) == 'args':
+            #   print(len(node[1]))
+                #i : int;
+                #for i in range(len(node[1])):
+                #    print(node[1][i][1])
+            #print(node)
+            #print(node[0])
+            #print(node[1])
+            #print(node[1][0])
+            #print(node[1][1])
+            #print(node[1][1][1])
+            #print(node[1][2][1][1])
+
+            '''
             i : int;
             strg : str = '';
             for i in range(len(node[1])):
@@ -241,8 +254,9 @@ class BasicExecute:
                     print("Undefined variable '"+node[1][i][1]+"' found!")
                     return 0
             print(strg)
-                          
-                
+            '''
+
+
             #print(node[1], len(node[1]))
             #print(node[1][1][1])
 
