@@ -39,7 +39,7 @@ class BasicLexer(Lexer):
     @_(r'#.*')
     def COMMENT(self, t):
         pass
-	
+
     @_(r'\n+')
     def newline(self,t ):
         self.lineno = t.value.count('\n')
@@ -225,10 +225,13 @@ class BasicExecute:
         if node[0] == 'print_stmt_args':
             #print(node)
             #print(node[1])
-            res = self.walkTree(node[1])
-            print(res, len(node[1]))
-            print(node[1])
-            print(node.count(args))
+            res = self.walkTree(node[1]);
+            print(res, len(node[1]));
+            print(node[1]);
+            #print(node.count(args));
+            ln : str = str(node[1]);
+            ln : str = str(ln.replace("'args'", '').replace('(', '').replace(')', '').replace('num', '').replace("''", '').replace(' , ,', ''));
+            print('ln',ln);
 	    #res = self.walkTree(node[1])
 	    #print(res)
             #if (node[1][0]) == 'args':
