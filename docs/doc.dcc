@@ -1,0 +1,12 @@
+@_('PRINT "(" things ")"')
+def statement(self, p):
+      return ('print_stmt', *p.things)
+
+@_('things COMMA thing')
+def things(self, p):
+      p.things.append(p.thing)
+      return p.things
+
+@_('thing')
+def things(self, p):
+     return [ p.thing ]
